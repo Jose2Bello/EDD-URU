@@ -218,4 +218,228 @@ Al terminar, se vacía la pila imprimiendo: * y luego +  =>  "3 4 5 * +"
 
 ---
 
+## 8. Anatomía: qué guarda realmente una pila
+
+```
+        objeto Pila<int>
+        +----------------------+
+        |  top: Nodo<T>*       |  <-- la pila ES un solo puntero
+        +----------------------+
+                 |
+                 v
+        +---------------+     +---------------+     +---------------+
+        | dato: 30      | --> | dato: 20      | --> | dato: 10      |
+        | siguiente: *  |     | siguiente: *  |     | siguiente:null|
+        +---------------+     +---------------+     +---------------+
+             tope                                     fondo
+```
+
+Consecuencias directas:
+
+- Apilar y desapilar tocan **un solo puntero** (`top`) → **O(1)**.
+- `tamano()` es O(n) si se recorre; **O(1)** si se guarda un contador aparte.
+- **No se puede** acceder al elemento del medio: no hay `siguiente` que salte.
+- El **fondo** es el primero que se apiló y el último que saldrá.
+
+---
+
+## 9. Las cinco operaciones que casi siempre piden además
+
+### 9.1 `tamano()` en O(1)
+
+Si el profesor insiste en O(1), guarda un contador en la clase y actualízalo en
+`apilar` y `desapilar`. Si no, recorrer es perfectamente válido:
+
+```cpp
+int tamano() const {
+    int n = 0;
+    for (Nodo<T>* a = top; a != nullptr; a = a->siguiente) n++;
+    return n;
+}
+```
+
+### 9.2 Copia profunda (constructor copia y `operator=`)
+
+El error clásico es copiar solo el puntero: las dos pilas comparten nodos y el
+destructor borra dos veces. La copia correcta se hace **nodo por nodo**:
+
+```cpp
+Pila(const Pila& otra) : top(nullptr) { copiarDesde(otra.top); }
+
+Pila& operator=(const Pila& otra) {
+    if (this != &otra) {          // evitar autoasignación p = p
+        limpiar();
+        copiarDesde(otra.top);
+    }
+    return *this;
+}
+
+// Baja hasta el fondo y vuelve apilando: conserva el orden original.
+void copiarDesde(Nodo<T>* nodo) {
+    if (nodo == nullptr) return;
+    copiarDesde(nodo->siguiente);
+    apilar(nodo->dato);
+}
+```
+
+### 9.3 Invertir la pila (sin estructuras extra)
+
+Con recursión: se saca el tope, se invierte el resto y el valor se mete al fondo.
+
+```cpp
+void invertir() {
+    if (estaVacia()) return;
+    T fondo;
+    desapilar(fondo);
+    invertir();
+    insertarEnFondo(fondo);
+}
+
+void insertarEnFondo(T valor) {
+    if (estaVacia()) { apilar(valor); return; }
+    T temporal;
+    desapilar(temporal);
+    insertarEnFondo(valor);
+    apilar(temporal);
+}
+```
+
+`3 2 1` (tope 3) → `1 2 3` (tope 1).
+
+> Ojo: usar **una sola** pila auxiliar no invierte nada; hay que usar dos o
+> recursión. Es una pregunta trampa frecuente.
+
+### 9.4 Ordenar una pila
+
+Solo con operaciones de pila: se saca el tope, se ordena el resto y se vuelve a
+insertar en su sitio. Deja el **mayor en el tope**.
+
+```cpp
+void insertarOrdenado(T valor) {
+    if (estaVacia() || valor > cima()) { apilar(valor); return; }
+    T temporal;
+    desapilar(temporal);
+    insertarOrdenado(valor);
+    apilar(temporal);
+}
+
+void ordenarMayorArriba() {
+    if (estaVacia()) return;
+    T temporal;
+    desapilar(temporal);
+    ordenarMayorArriba();
+    insertarOrdenado(temporal);
+}
+```
+
+### 9.5 El mínimo en O(1): `PilaMin`
+
+Con una segunda pila `minimos` que solo guarda los valores que son nuevos
+mínimos. Así `minimos.cima()` siempre es el mínimo actual.
+
+```cpp
+void apilar(T valor) {
+    datos.apilar(valor);
+    if (minimos.estaVacia() || valor <= minimos.cima())
+        minimos.apilar(valor);        // <= para soportar duplicados del minimo
+}
+
+bool desapilar(T& salida) {
+    if (!datos.desapilar(salida)) return false;
+    if (!minimos.estaVacia() && salida == minimos.cima())
+        minimos.desapilar(salida);
+    return true;
+}
+```
+
+📄 Todo esto implementado y probado: [`08_pila_completa.cpp`](../Plantillas/08_pila_completa.cpp)
+
+---
+
+## 10. Preguntas clásicas de examen
+
+### "Implementa una pila usando dos colas"
+
+La pila debe sacar el **último** que entró. Con colas, al desapilar se pasa todo
+a la otra cola dejando el último fuera:
+
+```cpp
+template <typename T>
+class PilaConDosColas {
+    Cola<T> a, b;
+public:
+    void apilar(T v) { a.encolar(v); }
+
+    bool desapilar(T& salida) {
+        if (a.estaVacia()) return false;
+        // pasar todo menos el ultimo a la otra cola
+        while (a.tamano() > 1) { T x; a.desencolar(x); b.encolar(x); }
+        bool ok = a.desencolar(salida);   // sale el ultimo
+        while (!b.estaVacia()) { T x; b.desencolar(x); a.encolar(x); }
+        return ok;
+    }
+};
+```
+
+`apilar` es O(1); `desapilar` es O(n). La operación inversa (cola con dos pilas)
+está en el [tutorial 07](07_colas.md#10-cola-implementada-con-dos-pilas).
+
+### "¿Por qué la pila permite `top` en O(1)?"
+
+Porque el tope es la **cabeza** de la lista: está guardado directamente en el
+objeto y no hay que recorrer nada.
+
+### "¿Qué diferencia hay entre `pop` y `top`?"
+
+`pop` **saca** el elemento (lo borra); `top` solo lo **mira** y deja la pila igual.
+
+### "¿Se puede hacer una pila de tamaño fijo?"
+
+Sí: con un arreglo y el índice `tope` (ver la `PilaArreglo` de la plantilla 05).
+Ventaja: memoria contigua y sin `new` por elemento. Desventaja: hay que decidir la
+capacidad de antemano y controlar el desbordamiento.
+
+---
+
+## 11. Tabla de complejidades
+
+| Operación | Con nodos | Con arreglo |
+|---|---|---|
+| `apilar` | O(1) | O(1) |
+| `desapilar` | O(1) | O(1) |
+| `cima` | O(1) | O(1) |
+| `estaVacia` | O(1) | O(1) |
+| `tamano` | O(n) / O(1) con contador | O(1) (`tope + 1`) |
+| `buscar` | O(n) | O(n) |
+| `invertir` / `ordenar` | O(n) / O(n²) | O(n) / O(n²) |
+| `minimo` con `PilaMin` | O(1) | O(1) |
+
+---
+
+## 12. Autoevaluación (respuestas al final)
+
+1. ¿En qué se diferencia `top` de `head`?
+2. ¿Qué pasa si se llama `desapilar` sobre una pila vacía?
+3. ¿Cuántas pilas auxiliares se necesitan para invertir una pila?
+4. ¿Por qué `PilaMin` compara con `<=` y no con `<`?
+5. ¿Qué complejidad tiene ordenar una pila solo con operaciones de pila?
+
+<details>
+<summary>Respuestas</summary>
+
+1. En la práctica son lo mismo (el primer nodo), pero el **significado** es
+   distinto: `top` marca el extremo por el que entra y sale; `head` era solo el
+   inicio de una lista.
+2. Debe devolver `false` y no modificar nada. Nunca se debe leer `top->dato` sin
+   comprobar antes `top != nullptr`.
+3. Una sola **no** alcanza para invertir; se necesitan dos pilas auxiliares o
+   recursión.
+4. Porque puede haber **varios** elementos con el mismo mínimo. Si al desapilar
+   uno quedara otro igual, el mínimo no debe cambiar.
+5. O(n²): cada inserción ordenada recorre hasta el fondo de la pila auxiliar.
+
+</details>
+
+---
+
 ## Siguiente tutorial → [07. Colas y Deque](07_colas.md)

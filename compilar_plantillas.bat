@@ -1,6 +1,6 @@
 @echo off
 REM ===========================================================================
-REM  compilar_plantillas.bat - compila y ejecuta las 7 plantillas de EDD
+REM  compilar_plantillas.bat - compila y ejecuta todas las plantillas de EDD
 REM  Uso:  compilar_plantillas.bat        (todas)
 REM        compilar_plantillas.bat 03     (solo la 03)
 REM ===========================================================================
@@ -20,7 +20,7 @@ set FLAGS=-std=c++17 -Wall -Wextra -O2 -static
 if "%~1"=="" (
     echo.
     echo ===========================================================
-    echo  COMPILANDO Y EJECUTANDO LAS 7 PLANTILLAS
+    echo  COMPILANDO Y EJECUTANDO todas las plantillas
     echo ===========================================================
     for %%F in ("*.cpp") do (
         echo.

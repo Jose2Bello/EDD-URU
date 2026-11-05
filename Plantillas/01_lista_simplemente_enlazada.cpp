@@ -347,7 +347,7 @@ int main() {
     std::cout << "   eliminar(999) = " << lista.eliminar(999) << "  (no existe)\n";
     lista.mostrar("   ");
 
-    int primero;
+    int primero = 0;
     lista.eliminarPrimero(primero);
     std::cout << "   eliminarPrimero() devolvio " << primero << "\n";
     lista.mostrar("   ");

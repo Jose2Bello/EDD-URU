@@ -192,7 +192,7 @@ public:
     //    de los tres punteros, ahora con un puntero "anterior" que hace de
     //    "siguiente" al momento de invertir.
     // ------------------------------------------------------------------
-    void invertir() {
+    void revertir() {
         NodoD<T>* actual = head;
         NodoD<T>* guardado = nullptr;
 
@@ -325,10 +325,10 @@ int main() {
     // --- Invertir -------------------------------------------------------------
     std::cout << "-- 7) invertir --\n";
     lista.mostrarAdelante("  Antes:  ");
-    lista.invertir();
+    lista.revertir();
     lista.mostrarAdelante("  Despues: ");
     lista.mostrarAtras("  Atras:   ");
-    lista.invertir();                    // volver a invertir debe restaurar
+    lista.revertir();                    // volver a invertir debe restaurar
     lista.mostrarAdelante("  Restaurada: ");
 
     // --- Concatenar -----------------------------------------------------------

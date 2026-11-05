@@ -264,7 +264,7 @@ int main() {
     std::cout << "=== PLANTILLA 04: lista circular doblemente enlazada ===\n\n";
 
     // 1) Empezar vacia
-    ListaCircularDoble<int> lista de reproduccion;
+    ListaCircularDoble<int> lista;
     std::cout << "1) La lista nueva ya esta vacia\n";
     lista.mostrarAdelante("   ");
 

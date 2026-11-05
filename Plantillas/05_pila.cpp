@@ -259,7 +259,7 @@ double evaluarPostfija(const char* postfija) {
         } else if (c == ' ') {
             i++;
         } else {                               // es un operador
-            double b, a;
+            double b = 0.0, a = 0.0;
             valores.desapilar(b);               // primero el operando derecho
             valores.desapilar(a);               // luego el izquierdo
             valores.apilar(aplicar(c, a, b));

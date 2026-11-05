@@ -1,4 +1,4 @@
-# Enunciados de los 14 ejercicios (sin resolver)
+# Enunciados de los 18 ejercicios (sin resolver)
 
 Este archivo contiene **solo los enunciados**, para que puedas intentar resolverlos
 antes de abrir la carpeta `Resueltos/`. Cada enunciado va seguido de un enlace a su
@@ -228,6 +228,58 @@ reporte final.
 > `darDeBaja` debe quitar al estudiante de todas las materias, de la lista de espera y
 > **del ABB** (borrado en un ABB = los tres casos de siempre).
 > 🔗 [Solución](../Resueltos/14_agenda_estudiantes.cpp)
+
+---
+
+## Bloque 4 — Ampliación de pilas y colas
+
+### Ejercicio 15 — Pila como historial (deshacer / rehacer)
+**Tema:** dos pilas y estados.
+
+Implementar un editor con `escribir(texto)`, `deshacer()`, `rehacer()` y `ver()`,
+usando dos pilas: una de estados previos (deshacer) y otra de estados futuros
+(rehacer). Al escribir algo nuevo después de deshacer, el historial de rehacer se
+**descarta** (igual que Ctrl+Z / Ctrl+Y).
+
+> Casos límite: deshacer sin cambios, rehacer sin haber deshecho y deshacer hasta
+> dejar el texto vacío.
+> 🔗 [Solución](../Resueltos/15_pila_deshacer_rehacer.cpp)
+
+---
+
+### Ejercicio 16 — Cola con dos pilas y pila con dos colas
+**Tema:** conversión entre LIFO y FIFO.
+
+1. `ColaConDosPilas<T>`: `encolar` O(1) y `desencolar` O(1) amortizado.
+2. `PilaConDosColas<T>`: `apilar` O(1) y `desapilar` O(n).
+
+> Comprobar con `assert` el orden FIFO y LIFO, las operaciones intercaladas y
+> sacar de una estructura vacía.
+> 🔗 [Solución](../Resueltos/16_cola_con_dos_pilas.cpp)
+
+---
+
+### Ejercicio 17 — Deque: máximo de cada ventana deslizante
+**Tema:** deque y complejidad O(n).
+
+Dado un arreglo y una ventana de tamaño `k`, devolver el máximo de cada ventana
+consecutiva en **O(n)**, guardando índices en un deque con valores decrecientes.
+
+> `[1, 3, -1, -3, 5, 3, 6, 7]` con `k = 3` da `[3, 3, 5, 5, 6, 7]`.
+> Casos límite: `k = 1`, `k = n`, `k > n` y `k <= 0`.
+> 🔗 [Solución](../Resueltos/17_deque_ventana_maxima.cpp)
+
+---
+
+### Ejercicio 18 — BFS en un laberinto y reconstrucción de la ruta
+**Tema:** cola y búsqueda en anchura.
+
+Con una matriz de `'S'`, `'E'`, `'.'` y `'#'`, calcular la distancia mínima de
+`S` a `E` con BFS y reconstruir el camino usando predecesores.
+
+> La primera vez que BFS llega a una casilla, llega por el camino más corto.
+> Probar también un laberinto **sin** camino.
+> 🔗 [Solución](../Resueltos/18_bfs_ruta_laberinto.cpp)
 
 ---
 

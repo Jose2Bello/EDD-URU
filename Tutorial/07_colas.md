@@ -261,4 +261,246 @@ mientras avanzas en horizontal.
 
 ---
 
+## 8. Anatomía: por qué se guardan dos punteros
+
+```
+        objeto Cola<int>
+        +----------------------+         +----------------------+
+        |  frente: Nodo<T>*    |         |  cola: Nodo<T>*      |
+        +----------------------+         +----------------------+
+                 |                                  |
+                 v                                  v
+        +---------------+     +---------------+   +---------------+
+        | dato: 10      | --> | dato: 20      |-> | dato: 30      |
+        | siguiente: *  |     | siguiente: *  |   | siguiente:null|
+        +---------------+     +---------------+   +---------------+
+             frente                                  cola (back)
+             sale                                     entra
+```
+
+Con un único puntero al frente, `encolar` tendría que recorrer toda la cola
+hasta el final → **O(n)**. Con `cola`/`back` guardado, todo es **O(1)**. Esa es
+la frase que el profesor quiere leer en el examen.
+
+---
+
+## 9. Operaciones que suelen pedir además
+
+### 9.1 Copia profunda
+
+Igual que en la pila: se copia **nodo por nodo**, nunca el puntero.
+
+```cpp
+Cola(const Cola& otra) : frente(nullptr), cola(nullptr) {
+    copiarDesde(otra.frente);
+}
+
+void copiarDesde(Nodo<T>* nodo) {
+    if (nodo == nullptr) return;
+    encolar(nodo->dato);        // encolar va al final: conserva el orden
+    copiarDesde(nodo->siguiente);
+}
+```
+
+### 9.2 Invertir
+
+Se invierte la cadena de enlaces y se **intercambian** `frente` y `cola`.
+
+```cpp
+void invertir() {
+    Nodo<T>* anterior = nullptr;
+    Nodo<T>* actual = frente;
+    while (actual != nullptr) {
+        Nodo<T>* siguiente = actual->siguiente;
+        actual->siguiente = anterior;
+        anterior = actual;
+        actual = siguiente;
+    }
+    Nodo<T>* temporal = frente;
+    frente = cola;
+    cola = temporal;
+}
+```
+
+### 9.3 Rotar
+
+Rotar a la izquierda `k` posiciones es desencolar y volver a encolar `k` veces.
+Se usa `k %= tamano()` para que `rotar(7)` sobre 5 elementos sea `rotar(2)`.
+
+```cpp
+void rotar(int k) {
+    int n = tamano();
+    if (n == 0) return;
+    k %= n;
+    for (int i = 0; i < k; i++) {
+        T valor;
+        desencolar(valor);
+        encolar(valor);
+    }
+}
+```
+
+📄 Todo esto implementado: [`09_cola_completa.cpp`](../Plantillas/09_cola_completa.cpp)
+
+---
+
+## 10. Cola implementada con dos pilas
+
+Pregunta clásica. Una cola saca el **más viejo**; una pila saca el **más nuevo**.
+Con dos pilas, `salida` actúa de bandeja: al pasar todo `entrada` → `salida`, el
+orden se invierte y el más viejo queda arriba.
+
+```cpp
+template <typename T>
+class ColaConDosPilas {
+private:
+    Pila<T> entrada;
+    Pila<T> salida;
+
+    void pasar() {
+        T v;
+        while (entrada.desapilar(v)) salida.apilar(v);
+    }
+
+public:
+    void encolar(T v) { entrada.apilar(v); }
+
+    bool desencolar(T& salidaValor) {
+        if (salida.estaVacia()) pasar();   // solo se pasa cuando hace falta
+        return salida.desapilar(salidaValor);
+    }
+};
+```
+
+`encolar` es **O(1)**; `desencolar` es **O(1) amortizado**, porque cada elemento
+se mueve entre pilas como máximo una vez. Si se pasara en cada `desencolar`, sería
+O(n) por operación.
+
+---
+
+## 11. Deque: aplicaciones
+
+| Aplicación | Por qué un deque |
+|---|---|
+| **Palíndromo** | Se compara sacando por los dos extremos |
+| **Ventana deslizante** | Se quitan viejos por delante y se añaden nuevos por detrás |
+| **Historial de navegación** | Se avanza y retrocede por ambos lados |
+| **Búfer circular** | Se descarta lo viejo por un lado y entra lo nuevo por el otro |
+
+### Palíndromo con deque
+
+```cpp
+bool esPalindromoDeque(const char* cadena) {
+    Deque<char> d;
+    for (int i = 0; cadena[i] != '\0'; i++) d.empujarFinal(cadena[i]);
+
+    char primero, ultimo;
+    while (d.tamano() > 1) {
+        d.sacarFrente(primero);
+        d.sacarFinal(ultimo);
+        if (primero != ultimo) return false;
+    }
+    return true;
+}
+```
+
+> Un palíndromo también se resuelve apilando toda la cadena y comparando al
+> desapilar (ver plantilla 08). El deque evita la copia y además detecta el fallo
+> en cuanto aparece.
+
+### Ventana deslizante (máximo de cada ventana de tamaño k)
+
+Problema clásico O(n): mantener en un deque los **índices** de los candidatos en
+orden decreciente de valor. El frente es siempre el máximo de la ventana.
+
+```cpp
+// Recorre el arreglo y mantiene en el deque solo lo que puede ser máximo.
+//   quitar por delante los indices que ya salieron de la ventana
+//   quitar por detras los valores menores que el nuevo
+```
+
+📄 Resuelto y verificado: [`17_deque_ventana_maxima.cpp`](../Ejercicios/Resueltos/17_deque_ventana_maxima.cpp)
+
+---
+
+## 12. BFS en un laberinto con cola
+
+La cola es **la** estructura de BFS: obliga a explorar por niveles. La primera
+vez que se alcanza una casilla, se hace por el camino más corto.
+
+```cpp
+int distanciaMinima(char mapa[FILAS][COLS]) {
+    int distancia[FILAS][COLS];
+    // inicializar todo a -1 (no visitado)
+    Cola<Posicion> pendientes;
+    pendientes.encolar(inicio);
+    distancia[inicio.fila][inicio.columna] = 0;
+
+    while (!pendientes.estaVacia()) {
+        Posicion actual; pendientes.desencolar(actual);
+        if (esSalida(actual)) return distancia[actual.fila][actual.columna];
+
+        for (cada vecino valido y no visitado) {
+            distancia[nf][nc] = distancia[actual.fila][actual.columna] + 1;
+            pendientes.encolar({nf, nc});
+        }
+    }
+    return -1;   // sin camino
+}
+```
+
+📄 Implementado en [`09_cola_completa.cpp`](../Plantillas/09_cola_completa.cpp) y
+con reconstrucción de la ruta en [`18_bfs_ruta_laberinto.cpp`](../Ejercicios/Resueltos/18_bfs_ruta_laberinto.cpp)
+
+---
+
+## 13. Cola de prioridad
+
+La cola normal es FIFO; la de prioridad atiende primero al más urgente.
+Es un tema aparte, con su propia guía:
+
+➡️ [10. Cola de prioridad](10_cola_de_prioridad.md)
+
+---
+
+## 14. Tabla de complejidades
+
+| Operación | Cola con nodos | Cola circular (arreglo) | Deque |
+|---|---|---|---|
+| `encolar` por el final | O(1) | O(1) | O(1) |
+| `desencolar` por el frente | O(1) | O(1) | O(1) |
+| `encolar` / `desencolar` por el frente | no | no | O(1) |
+| `primero` / `ultimo` | O(1) | O(1) | O(1) |
+| `tamano` | O(n) / O(1) con contador | O(1) | O(n) |
+| `invertir` | O(n) | O(n) | O(n) |
+| `buscar` | O(n) | O(n) | O(n) |
+
+---
+
+## 15. Autoevaluación (respuestas al final)
+
+1. ¿Por qué una cola necesita dos punteros y una pila solo uno?
+2. ¿Qué distingue una cola circular de una cola con arreglo normal?
+3. ¿Por qué hace falta un contador en la cola circular?
+4. ¿Qué complejidad tiene `desencolar` en una cola con dos pilas?
+5. ¿Qué estructura usa BFS y por qué?
+
+<details>
+<summary>Respuestas</summary>
+
+1. Porque se inserta por un extremo y se elimina por el otro. La pila hace ambas
+   cosas por el mismo extremo (el tope).
+2. Que los índices **dan la vuelta** con el módulo, reutilizando las posiciones
+   que quedan libres al frente; no hace falta desplazar elementos.
+3. Porque `frente == final` ocurre tanto cuando está **vacía** como cuando está
+   **llena**. El contador `cantidad` desempata los dos casos.
+4. **O(1) amortizado**: cada elemento se pasa de `entrada` a `salida` una sola
+   vez en toda su vida.
+5. Una **cola**, porque permite recordar los vecinos pendientes y explorar por
+   niveles, garantizando así el camino más corto en grafos sin pesos.
+
+</details>
+
+---
+
 ## Siguiente tutorial → [08. Árboles binarios y ABB](08_arboles_binarios.md)

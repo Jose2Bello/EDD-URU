@@ -1,6 +1,6 @@
 # Estructuras de Datos (EDD) — Curso completo con ejercicios resueltos
 
-Todo el material está en español y **verificado**: los 14 ejercicios compilan sin errores
+Todo el material está en español y **verificado**: los 18 ejercicios compilan sin errores
 ni advertencias (`g++ -std=c++17 -Wall -Wextra`) y todos pasan sus `assert`. La salida
 real de cada programa está pegada al final de su archivo, en la sección
 `=== SALIDA ESPERADA ===`.
@@ -8,8 +8,8 @@ real de cada programa está pegada al final de su archivo, en la sección
 ```
 edd/
 ├── README.md                    <- estás aquí (índice general)
-├── compilar_todo.bat            <- compila y ejecuta los 14 ejercicios
-├── compilar_plantillas.bat      <- compila y ejecuta las 7 plantillas
+├── compilar_todo.bat            <- compila y ejecuta todos los ejercicios
+├── compilar_plantillas.bat      <- compila y ejecuta todas las plantillas
 ├── PracticaEDD.cpp              <- tu código original (lista simple)
 ├── Tutorial/                    <- teoría en Markdown (léelo en orden)
 ├── Plantillas/                  <- código base listo para copiar y pegar
@@ -35,6 +35,9 @@ advertencias y traen un `main` de prueba:
 | 05 | [Pila + expresiones](Plantillas/05_pila.cpp) |
 | 06 | [Cola, cola circular y deque](Plantillas/06_cola.cpp) |
 | 07 | [Árbol binario de búsqueda](Plantillas/07_arbol_binario_busqueda.cpp) |
+| 08 | [Pila completa (de examen)](Plantillas/08_pila_completa.cpp) |
+| 09 | [Cola completa + deque + BFS](Plantillas/09_cola_completa.cpp) |
+| 10 | [Cola y pila de prioridad](Plantillas/10_cola_prioridad.cpp) |
 
 ---
 
@@ -57,7 +60,9 @@ advertencias y traen un `main` de prueba:
 | Tutorial | Contenido |
 |---|---|
 | [06. Pilas (Stack)](Tutorial/06_pilas.md) | LIFO, aplicaciones, dos implementaciones, infija → postfija |
-| [07. Colas y Deque](Tutorial/07_colas.md) | FIFO, cola circular, cola de prioridad, deque, BFS |
+| [07. Colas y Deque](Tutorial/07_colas.md) | FIFO, cola circular, cola con dos pilas, deque, BFS, ventana deslizante |
+| [10. Cola de prioridad](Tutorial/10_cola_de_prioridad.md) | inserción ordenada, heap O(log n), desempate FIFO/LIFO, pila de prioridad |
+| [11. Resumen para el examen](Tutorial/11_resumen_examen_pilas_colas.md) | chuleta de pilas y colas: esqueletos, complejidades y 10 preguntas |
 
 ### Fase 4 — Estructuras no lineales
 | Tutorial | Contenido |
@@ -65,7 +70,7 @@ advertencias y traen un `main` de prueba:
 | [08. Árboles binarios y ABB](Tutorial/08_arboles_binarios.md) | ABB, los tres recorridos, altura, borrado, BFS/DFS |
 | [09. Complejidad y buenas prácticas](Tutorial/09_complejidad_y_practicas.md) | Big-O de cada operación, 10 errores típicos, checklist de entrega |
 
-### Fase 5 — Práctica: 14 ejercicios resueltos
+### Fase 5 — Práctica: 18 ejercicios resueltos
 
 Primero lee los [enunciados completos](Ejercicios/Enunciados/00_enunciados.md) e inténtalos
 tú; después compara con la solución.
@@ -86,6 +91,10 @@ tú; después compara con la solución.
 | 12 | Cola, cola circular y deque | FIFO, índices con módulo, prioridad | [`12_cola_ventanilla.cpp`](Ejercicios/Resueltos/12_cola_ventanilla.cpp) |
 | 13 | Árbol binario de búsqueda | ABB completo con borrado en 3 casos | [`13_arbol_busqueda.cpp`](Ejercicios/Resueltos/13_arbol_busqueda.cpp) |
 | 14 | **Proyecto final** | integra las 5 estructuras | [`14_agenda_estudiantes.cpp`](Ejercicios/Resueltos/14_agenda_estudiantes.cpp) |
+| 15 | Pila como historial | deshacer / rehacer con dos pilas | [`15_pila_deshacer_rehacer.cpp`](Ejercicios/Resueltos/15_pila_deshacer_rehacer.cpp) |
+| 16 | Cola con dos pilas y pila con dos colas | conversión LIFO ↔ FIFO | [`16_cola_con_dos_pilas.cpp`](Ejercicios/Resueltos/16_cola_con_dos_pilas.cpp) |
+| 17 | Deque: ventana deslizante | máximo por ventana en O(n) | [`17_deque_ventana_maxima.cpp`](Ejercicios/Resueltos/17_deque_ventana_maxima.cpp) |
+| 18 | BFS en un laberinto | cola, distancia mínima y ruta | [`18_bfs_ruta_laberinto.cpp`](Ejercicios/Resueltos/18_bfs_ruta_laberinto.cpp) |
 
 Cada archivo empieza con el **enunciado completo** en un bloque de comentario, sigue con la
 **solución comentada línea por línea** y termina con la **salida real verificada**.
@@ -96,7 +105,7 @@ Cada archivo empieza con el **enunciado completo** en un bloque de comentario, s
 
 ### Opción 1 — Todo de un clic (Windows)
 ```powershell
-.\compilar_todo.bat          # compila y ejecuta los 14
+.\compilar_todo.bat          # compila y ejecuta todos
 .\compilar_todo.bat 07       # solo el ejercicio 07
 ```
 

@@ -1,6 +1,6 @@
 @echo off
 REM ===========================================================================
-REM  compilar_todo.bat - compila y ejecuta los 14 ejercicios de EDD
+REM  compilar_todo.bat - compila y ejecuta todos los ejercicios de EDD
 REM  Uso:  compilar_todo.bat          (compila y ejecuta todos)
 REM        compilar_todo.bat 07       (solo el ejercicio 07)
 REM ===========================================================================
@@ -22,7 +22,7 @@ set FLAGS=-std=c++17 -Wall -Wextra -O2 -static
 if "%~1"=="" (
     echo.
     echo ==========================================================
-    echo  COMPILANDO Y EJECUTANDO LOS 14 EJERCICIOS
+    echo  COMPILANDO Y EJECUTANDO todos los ejercicios
     echo ==========================================================
     for %%F in ("%DIR%\*.cpp") do (
         set NAME=%%~nF

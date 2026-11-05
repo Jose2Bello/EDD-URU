@@ -169,7 +169,7 @@ public:
 
     // ===================== TRANSFORMAR =====================
 
-    void invertir() {                      // O(n) reusando los mismos nodos
+    void revertir() {                      // O(n) reusando los mismos nodos
         Nodo<T>* actual = head;             // se parte de la cabeza ORIGINAL
         intercambiar(head, tail);           // las puntas cambian de lugar
 
@@ -260,10 +260,10 @@ int main() {
     // 6) Invertir
     std::cout << "\n6) Invertir\n";
     lista.mostrarAdelante("   antes:   ");
-    lista.invertir();
+    lista.revertir();
     lista.mostrarAdelante("   despues: ");
     lista.mostrarAtras("   atras:   ");
-    lista.invertir();
+    lista.revertir();
     lista.mostrarAdelante("   otra vez (vuelve al inicio): ");
 
     // 7) Concatenar

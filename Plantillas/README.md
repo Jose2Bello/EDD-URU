@@ -19,6 +19,9 @@ funcionamiento de cada método.
 | 05 | [`05_pila.cpp`](05_pila.cpp) | `Pila` con nodos + `PilaArreglo` con capacidad fija + `parentesisBalanceados`, `aPostfija`, `evaluarPostfija` |
 | 06 | [`06_cola.cpp`](06_cola.cpp) | `Cola` (FIFO), `ColaCircular` con arreglo, `ColaPrioridad`, `Deque` |
 | 07 | [`07_arbol_binario_busqueda.cpp`](07_arbol_binario_busqueda.cpp) | `insertar`, `buscar`, `borrar` (3 casos), `preOrden`, `inOrden`, `postOrden`, `preOrdenIterativo`, `nivelOrden`, `altura`, `esLleno`, `esBalanceado`, `contarNodos`, `sumaValores`, `minimo`, `maximo`, `sonIdenticos`, `listar` |
+| 08 | [`08_pila_completa.cpp`](08_pila_completa.cpp) | **Pila de examen**: copia profunda (`operator=`), `contar`, `busca`, `vecesQueAparece`, `desapilarN`, `invertir` (recursivo), `duplicar`, `ordenarMayorArriba`; `PilaMin` (mínimo en O(1)); aplicaciones: invertir cadena, decimal → binario, palíndromo |
+| 09 | [`09_cola_completa.cpp`](09_cola_completa.cpp) | **Cola de examen**: copia profunda, `busca`, `invertir`, `rotar`; `ColaCircular` genérica; `Deque` completo; aplicaciones: **BFS en laberinto**, palíndromo con deque, **cola con dos pilas** |
+| 10 | [`10_cola_prioridad.cpp`](10_cola_prioridad.cpp) | `ColaPrioridad` (inserción ordenada, FIFO entre iguales), `PilaPrioridad` (LIFO entre iguales) y `ColaPrioridadHeap` (montículo, O(log n)) |
 
 ---
 
